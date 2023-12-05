@@ -42,7 +42,7 @@ async def CreateWorld(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(answer)
 
 if __name__ == '__main__':
-    builder = ApplicationBuilder().connect_timeout(connect_timeout=10).read_timeout(read_timeout=10).write_timeout(write_timeout=10)
+    builder = ApplicationBuilder().connect_timeout(connect_timeout=15).read_timeout(read_timeout=15).write_timeout(write_timeout=15)
     application = builder.token(tgToken).build()
     
     start_handler = CommandHandler('start', start)

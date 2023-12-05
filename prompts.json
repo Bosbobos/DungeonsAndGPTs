@@ -1,6 +1,6 @@
 {
     "Compression": "Create a json of the following format using the user input. Be as concise as possible, but don't miss any important details",
-    "DescriptionGenerationInfo": "The description should be beautiful, but concise",
+    "DescriptionGenerationInfo": "The description should be beautiful, but concise. Use 150 words",
     "WorldCreation": "You are the gamemaster of a Dungeons&Dragons session, create a world in the setting specified by the user and describe it. Make sure to specify the world's name and give it some distinctive features.",
     "StartingGear": "Using the user provided infromation, generate a set of starting gear for them",
     "StartingSkill": "Based on the user specified info, create their first skill",
