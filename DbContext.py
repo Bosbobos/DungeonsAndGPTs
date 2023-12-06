@@ -29,31 +29,37 @@ class DbContext:
         cursor.close()
         conn.close()
 
-    def read_record(self, table_name, record_id):
+    def read_record(self, table_name, column_name, search_value):
         conn = self.connect()
         cursor = conn.cursor()
-        query = sql.SQL(f"SELECT * FROM {table_name} WHERE id = %s")
-        cursor.execute(query, (record_id,))
+        query = sql.SQL(f"SELECT * FROM {table_name} WHERE {column_name} = %s")
+        cursor.execute(query, (search_value,))
         record = cursor.fetchone()
         cursor.close()
         conn.close()
-        return record
 
-    def update_record(self, table_name, record_id, updates):
+        if record:
+            columns = [desc[0] for desc in cursor.description]
+            record_dict = dict(zip(columns, record))
+            return record_dict
+        else:
+            return None
+
+    def update_record(self, table_name, search_by_column, search_value, updates):
         conn = self.connect()
         cursor = conn.cursor()
         set_clause = ', '.join([f"{key} = %s" for key in updates.keys()])
-        query = sql.SQL(f"UPDATE {table_name} SET {set_clause} WHERE id = %s")
-        cursor.execute(query, tuple(updates.values()) + (record_id,))
+        query = sql.SQL(f"UPDATE {table_name} SET {set_clause} WHERE {search_by_column} = %s")
+        cursor.execute(query, tuple(updates.values()) + (search_value,))
         conn.commit()
         cursor.close()
         conn.close()
 
-    def delete_record(self, table_name, record_id):
+    def delete_record(self, table_name, search_by_column, search_value):
         conn = self.connect()
         cursor = conn.cursor()
-        query = sql.SQL(f"DELETE FROM {table_name} WHERE id = %s")
-        cursor.execute(query, (record_id,))
+        query = sql.SQL(f"DELETE FROM {table_name} WHERE {search_by_column} = %s")
+        cursor.execute(query, (search_value,))
         conn.commit()
         cursor.close()
         conn.close()

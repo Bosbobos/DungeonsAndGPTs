@@ -3,6 +3,7 @@ from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
 import json
 from GptCore import GptGamemaster
+import DbContext
 
 with open("appsettings.json", "r") as settings:
     data = json.load(settings)
@@ -10,10 +11,9 @@ with open("appsettings.json", "r") as settings:
 tgToken = data["Tokens"]["Telegram"]
 gptKey = data["Tokens"]["ChatGPT"]
 
-with open("prompts.json", "r") as promptsJson:
-    prompts = json.load(promptsJson)
+dbContext = DbContext.DbContext(**data["DbConnection"])
 
-gamemaster = GptGamemaster(gptKey, prompts)
+gamemaster = GptGamemaster(gptKey, dbContext)
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -38,7 +38,8 @@ async def SendGptMessage(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(answer)
 
 async def CreateWorld(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    answer = gamemaster.CreateWorld(update.message.text)
+    user = update.message.from_user
+    answer = gamemaster.CreateWorld(user['username'],update.message.text)
     await update.message.reply_text(answer)
 
 if __name__ == '__main__':
@@ -47,7 +48,7 @@ if __name__ == '__main__':
     
     start_handler = CommandHandler('start', start)
     gpt_msg_sender = MessageHandler(filters.Regex('SendMessage'), SendGptMessage)
-    world_creator = MessageHandler(filters.Regex('Future'), CreateWorld)
+    world_creator = MessageHandler(filters.Regex('Fantasy'), CreateWorld)
     msg_handler = MessageHandler(filters.TEXT & ~filters.COMMAND, reply)
     application.add_handler(start_handler)
     application.add_handler(gpt_msg_sender)
@@ -55,3 +56,4 @@ if __name__ == '__main__':
     application.add_handler(msg_handler)
 
     application.run_polling()
+    
