@@ -38,9 +38,16 @@ async def SendGptMessage(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(answer)
 
 async def CreateWorld(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.message.from_user
-    answer = gamemaster.CreateWorld(user['username'],update.message.text)
+    username = update.message.from_user['username']
+    answer = gamemaster.CreateWorld(username,update.message.text)
+    
     await update.message.reply_text(answer)
+
+async def CreateCharacter(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        username = update.message.from_user['username']
+        answer = gamemaster.CreateCharacter(username, update.message.text)
+
+        await update.message.reply_text(answer)
 
 if __name__ == '__main__':
     builder = ApplicationBuilder().connect_timeout(connect_timeout=15).read_timeout(read_timeout=15).write_timeout(write_timeout=15)
@@ -49,10 +56,12 @@ if __name__ == '__main__':
     start_handler = CommandHandler('start', start)
     gpt_msg_sender = MessageHandler(filters.Regex('SendMessage'), SendGptMessage)
     world_creator = MessageHandler(filters.Regex('Fantasy'), CreateWorld)
+    character_creator = MessageHandler(filters.Regex('I\'m Hwei, a brooding painter who creates brilliant art in order to confront Ionia\'s criminals and comfort their victims'), CreateCharacter)
     msg_handler = MessageHandler(filters.TEXT & ~filters.COMMAND, reply)
     application.add_handler(start_handler)
     application.add_handler(gpt_msg_sender)
     application.add_handler(world_creator)
+    application.add_handler(character_creator)
     application.add_handler(msg_handler)
 
     application.run_polling()
