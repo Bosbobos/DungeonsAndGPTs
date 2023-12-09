@@ -10,6 +10,6 @@ def DictToString(dict):
     return returnStr
 
 def FilteredDictToJson(dict, excluded):
-    filtered = {k: dict[k] for k in dict if k not in excluded}
+    filtered = {k: dict[k].strip() for k in dict if k not in excluded}
 
     return json.dumps(filtered)

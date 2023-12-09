@@ -69,7 +69,7 @@ class GptGamemaster:
 
         result = Converter.DictToString(ansDict)
 
-        return [result, gear]
+        return [result, *gear]
 
     
     def __CreateStaringGear(self, username):
@@ -77,7 +77,7 @@ class GptGamemaster:
         worldInfo = self.dbContext.read_latest_record("world", "username", username)
         character = self.dbContext.read_latest_record("characters", "username", username)
         worldJson = Converter.FilteredDictToJson(worldInfo, ['id', 'username'])
-        characterJson = Converter.FilteredDictToJson(worldInfo, ['id', 'username'])
+        characterJson = Converter.FilteredDictToJson(character, ['id', 'username'])
         sysMsgs.append(worldJson)
         gear = self.SendMessage(sysMsgs, characterJson, 0)
         gearDict = JsonManager.ExtractJson(gear)
@@ -86,8 +86,37 @@ class GptGamemaster:
         for item in newansDict:
             self.dbContext.create_record("items", item)
 
-        return gearDict
+        abilities = self.__CreateStartingAbilities(worldJson, character, gearDict)
+
+        return [gearDict, abilities]
         
+
+    def __CreateStartingAbilities(self, worldJson, character, gearDict):
+        characterJson = Converter.FilteredDictToJson(character, ['id', 'username'])
+        gearJson = '['
+        for gear in gearDict:
+            gearJson += Converter.FilteredDictToJson(gear, ['id', 'character_id', 'Name', 'SkillBeautifulDescription']) + ','
+        gearJson += ']'
+        sysMsgs = [self.dbContext.read_record("Prompts", "key", "StartingAbilitiesCreation")["prompt"]]
+        existingSkills = self.dbContext.read_record("Prompts", "key", "SkillsGivenByItems")["prompt"] + gearJson
+        sysMsgs.append(existingSkills)
+        sysMsgs.append(worldJson)
+        abilities = self.SendMessage(sysMsgs, characterJson, 0)
+        abilitiesDict = JsonManager.ExtractJson(abilities)
+
+        for gear in gearDict:
+            ability = {}
+            ability['ShortDescription'] = gear['SkillShortDescription']
+            ability['BeautifulDescription'] = gear['SkillBeautifulDescription']
+            abilitiesDict.append(ability)
+
+        newAbilitiesDict = self.__addSmthToJson('character_id', character["id"], abilitiesDict)
+
+        for skill in newAbilitiesDict:
+            self.dbContext.create_record("abilities", skill)
+        
+        return newAbilitiesDict
+
 
     def __saveCompressedInformation(self, username, tableName, text, format):
         sysMsg = self.dbContext.read_record("Prompts", "key", format)["prompt"]
