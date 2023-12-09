@@ -3,7 +3,8 @@ import json
 def DictToString(dict):
     returnStr = ''
     for key, value in dict.items():
-        returnStr += f"{key}: {value},\n"
+        if key!='id' and key!='username':
+            returnStr += f"{key}: {value.strip()},\n"
 
     returnStr = returnStr.rstrip(",\n")
 
