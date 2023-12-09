@@ -63,3 +63,21 @@ class DbContext:
         conn.commit()
         cursor.close()
         conn.close()
+
+    def read_latest_record(self, table_name, column_name, search_value):
+        conn = self.connect()
+        cursor = conn.cursor()
+
+        query = sql.SQL(f"SELECT * FROM {table_name} WHERE {column_name} = %s ORDER BY id DESC LIMIT 1")
+        cursor.execute(query, (search_value,))
+
+        record = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if record:
+            columns = [desc[0] for desc in cursor.description]
+            record_dict = dict(zip(columns, record))
+            return record_dict
+        else:
+            return None
