@@ -81,3 +81,21 @@ class DbContext:
             return record_dict
         else:
             return None
+
+    def update_latest_record(self, table_name, search_by_column, search_value, updates):
+        conn = self.connect()
+        cursor = conn.cursor()
+
+        select_latest_id_query = sql.SQL(f"SELECT id FROM {table_name} WHERE {search_by_column} = %s ORDER BY id DESC LIMIT 1")
+        cursor.execute(select_latest_id_query, (search_value,))
+        latest_id = cursor.fetchone()
+
+        if latest_id:
+            set_clause = ', '.join([f"{key} = %s" for key in updates.keys()])
+            update_query = sql.SQL(f"UPDATE {table_name} SET {set_clause} WHERE id = %s")
+            cursor.execute(update_query, tuple(updates.values()) + (latest_id[0],))
+            conn.commit()
+
+        cursor.close()
+        conn.close()
+    
