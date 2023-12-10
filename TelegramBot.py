@@ -39,15 +39,6 @@ async def SendMessageWithButtons(update, context, message, buttons):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm alive!")
 
-async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    reply_keyboard = [["Пойти налево"], ["Пойти направо"], ["Улететь на ракете"]]
-    await update.message.reply_text(
-        "Перед собой ты видишь развилку, куда ты направишься?",
-        reply_markup=ReplyKeyboardMarkup(
-            reply_keyboard, one_time_keyboard=True, resize_keyboard=True
-        )
-    )
-
 async def SendGptMessage(update: Update, context: ContextTypes.DEFAULT_TYPE):
     answer = gamemaster.SendMessage('', 'Hello!', 0)
     await update.message.reply_text(answer)
@@ -86,13 +77,24 @@ async def CreateStartingGearAndAbilities(update: Update, context: ContextTypes.D
     username = update.message.from_user['username']
     answer = gamemaster.CreateStaringGearAndAbilities(username)
 
-    for message in answer:
-        await SendMessageWithButtons(update, context, message, None)
+    gear, abilities = answer
+
+    gearString = 'Wait, did your character always have these items? Nevermind, now they do\n'
+    for pieceOfGear in gear:
+        gearString += pieceOfGear
+
+    abilitiesString = 'Look at how many abilities your character has! They\'re definetly going to achieve a lot with such knowledge\n'
+    for skill in abilities:
+        abilitiesString += skill
+    
+    abilitiesString = abilitiesString.replace('BeautifulDescription', 'Description')
+    await SendMessageWithButtons(update, context, gearString, None)
+    await SendMessageWithButtons(update, context, abilitiesString, None)
 
 
 async def StartChangingCharacterInfo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     characteristicToChange = update.message.text
-    message = f'What would you like your character\'s new {characteristicToChange} to be?'
+    message = f'What would you like your character\'s new {characteristicToChange.lower()} to be?'
     await SendMessageWithButtons(update, context, message, None)
 
 
@@ -142,6 +144,7 @@ async def ChooseMethodBasedOnState(update: Update, context: ContextTypes.DEFAULT
             CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForCharacterCreationAssessment)
             return await AssessCharacterCreation(update, context)
         case CharacterStateEnum.WaitingForCharacteristicChangeInput:
+            CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForCharacterCreationAssessment)
             return await ChangeCharacterInfo(update, context)
          
 

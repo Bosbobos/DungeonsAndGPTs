@@ -4,7 +4,10 @@ def DictToString(dict):
     returnStr = ''
     for key, value in dict.items():
         if key!='id' and key!='username':
-            returnStr += f"{key}: {value.strip()},\n"
+            if isinstance(value, str):
+                returnStr += f"{key}: {value.strip()},\n"
+            else:
+                returnStr += f"{key}: {value},\n"
 
     returnStr = returnStr.rstrip(",\n")
 

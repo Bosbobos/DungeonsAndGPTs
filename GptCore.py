@@ -85,10 +85,14 @@ class GptGamemaster:
             self.dbContext.create_record("items", item)
 
         gearResult = [Converter.DictToString({'Item': item['Name']}) for item in gearDict]
+        for i in range(len(gearResult)-1):
+            gearResult[i] += '\n'
 
         abilities = self.__CreateStartingAbilities(worldJson, character, gearDict)
-        abilitiesNewDict = ["".join(f"{key}: {value}" for key, value in ability.items() if key != 'ShortDescription') for ability in abilities]
-        abilitiesResult = [Converter.DictToString(abilitiesNewDict)]
+        abilitiesNewDict = [{key: value for key, value in ability.items() if key != 'ShortDescription' and key != 'character_id'} for ability in abilities]
+        abilitiesResult = [Converter.DictToString(abilitiesDict) for abilitiesDict in abilitiesNewDict]
+        for i in range(len(abilitiesResult)-1):
+            abilitiesResult[i] += '\n'
 
         return [gearResult, abilitiesResult]
         
