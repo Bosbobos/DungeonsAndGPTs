@@ -99,3 +99,19 @@ class DbContext:
         cursor.close()
         conn.close()
     
+
+    def read_all_records(self, table_name, column_name, search_value):
+        conn = self.connect()
+        cursor = conn.cursor()
+        query = sql.SQL(f"SELECT * FROM {table_name} WHERE {column_name} = %s")
+        cursor.execute(query, (search_value,))
+        records = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        if records:
+            columns = [desc[0] for desc in cursor.description]
+            records_list = [dict(zip(columns, record)) for record in records]
+            return records_list
+        else:
+            return None
