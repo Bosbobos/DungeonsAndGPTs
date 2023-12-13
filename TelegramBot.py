@@ -17,8 +17,6 @@ dbContext = DbContext.DbContext(**data["DbConnection"])
 
 gamemaster = GptGamemaster(gptKey, dbContext)
 
-characteristicToChange = ''
-
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
@@ -27,7 +25,8 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 async def SendMessageWithButtons(update, context, message, buttons):
     if buttons == None: replyButtons = ReplyKeyboardRemove()
-    elif not isinstance(buttons, (list,tuple)): replyButtons = ReplyKeyboardMarkup([buttons], one_time_keyboard=True, resize_keyboard=True)
+    elif isinstance(buttons, dict): replyButtons = list(buttons.values)
+    elif not isinstance(buttons, (list,tuple)): replyButtons = ReplyKeyboardMarkup([[buttons]], one_time_keyboard=True, resize_keyboard=True)
     else: replyButtons = ReplyKeyboardMarkup(buttons, one_time_keyboard=True, resize_keyboard=True)
 
     await context.bot.send_message(
@@ -91,16 +90,21 @@ async def CreateStartingGearAndAbilities(update: Update, context: ContextTypes.D
     await SendMessageWithButtons(update, context, gearString, None)
     await SendMessageWithButtons(update, context, abilitiesString, None)
 
+    message = 'Are your ready to begin your campaign?'
+    button = 'Let\'s start!'
+    await SendMessageWithButtons(update, context, message, button)
+
 
 async def StartChangingCharacterInfo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     characteristicToChange = update.message.text
+    context.user_data['characteristicToChange'] = characteristicToChange
     message = f'What would you like your character\'s new {characteristicToChange.lower()} to be?'
     await SendMessageWithButtons(update, context, message, None)
 
 
 async def ChangeCharacterInfo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = update.message.from_user['username']
-    newInfo = gamemaster.ChangeCharacterInfo(username, characteristicToChange, update.message.text)
+    newInfo = gamemaster.ChangeCharacterInfo(username, context.user_data['characteristicToChange'], update.message.text)
     message = 'Would you like to change something else, or shall we begin?\n' + newInfo
     buttons = GetChangeCharacterButtons()
     await SendMessageWithButtons(update, context, message, buttons)
@@ -111,7 +115,6 @@ async def ButtonExpected(update, context, expectedButtons):
 
 async def AssessCharacterCreation(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = update.message.from_user['username']
-    global characteristicToChange
     
     btn, secondRow, thirdRow = GetChangeCharacterButtons()
     changeButtons = [*secondRow, *thirdRow]
@@ -121,10 +124,21 @@ async def AssessCharacterCreation(update: Update, context: ContextTypes.DEFAULT_
             await CreateStartingGearAndAbilities(update, context)
         case x if x in changeButtons:
             CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForCharacteristicChangeInput)
-            characteristicToChange = update.message.text
+            context.user_data['characteristicToChange'] = update.message.text
             await StartChangingCharacterInfo(update, context)
         case _:
             await ButtonExpected(update, context, [btn, secondRow, thirdRow])
+
+
+async def StartCampaign(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    username = update.message.from_user['username']
+    text, actions = gamemaster.StartCampaign(username)
+
+    actionsList = []
+    for action in actions:
+        actionsList.append([action])
+
+    await SendMessageWithButtons(update, context, text, actionsList)
 
 
 async def ChooseMethodBasedOnState(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -141,11 +155,15 @@ async def ChooseMethodBasedOnState(update: Update, context: ContextTypes.DEFAULT
             CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForCharacterCreationAssessment)
             return await CreateCharacter(update, context)
         case CharacterStateEnum.WaitingForCharacterCreationAssessment:
-            CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForCharacterCreationAssessment)
             return await AssessCharacterCreation(update, context)
         case CharacterStateEnum.WaitingForCharacteristicChangeInput:
             CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForCharacterCreationAssessment)
             return await ChangeCharacterInfo(update, context)
+        case CharacterStateEnum.WaitingForCampaignStart:
+            CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForPlayerAction)
+            return await StartCampaign(update, context)
+        case _:
+            return await SendMessageWithButtons(update, context, f'Unknown state: {state}', None)
          
 
 if __name__ == '__main__':
