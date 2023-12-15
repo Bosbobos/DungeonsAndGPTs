@@ -23,6 +23,7 @@ logging.basicConfig(
 )
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
+
 async def SendMessageWithButtons(update, context, message, buttons):
     if buttons == None: replyButtons = ReplyKeyboardRemove()
     elif isinstance(buttons, dict): replyButtons = list(buttons.values)
@@ -35,17 +36,21 @@ async def SendMessageWithButtons(update, context, message, buttons):
     reply_markup=replyButtons
     )
 
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm alive!")
+
 
 async def SendGptMessage(update: Update, context: ContextTypes.DEFAULT_TYPE):
     answer = gamemaster.SendMessage('', 'Hello!', 0)
     await update.message.reply_text(answer)
 
+
 async def StartWorldCreation(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = 'Hello there, traveler! In what setting will your adventure go? You can choose one of the variants below, as well as type your own'
     buttons = [['Fantasy'], ['Future'], ['Sci-fi']]
     await SendMessageWithButtons(update, context, message, buttons)
+
 
 async def CreateWorld(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = update.message.from_user['username']
@@ -109,9 +114,11 @@ async def ChangeCharacterInfo(update: Update, context: ContextTypes.DEFAULT_TYPE
     buttons = GetChangeCharacterButtons()
     await SendMessageWithButtons(update, context, message, buttons)
 
+
 async def ButtonExpected(update, context, expectedButtons):
     message = 'Please, click one of the buttons provided to you'
     await SendMessageWithButtons(update, context, message, expectedButtons)
+
 
 async def AssessCharacterCreation(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = update.message.from_user['username']
@@ -138,6 +145,31 @@ async def StartCampaign(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for action in actions:
         actionsList.append([action])
 
+    context.user_data['possibleActions'] = actionsList
+
+    await SendMessageWithButtons(update, context, text, actionsList)
+
+
+async def MakeExplorationPlayerTurn(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    username = update.message.from_user['username']
+    msg = update.message.text
+    try:
+        possible = context.user_data['possibleActions']
+    except KeyError:
+        possible = dbContext.read_latest_record('character_state', 'username', username)['possible_actions']
+    
+    if msg not in possible and [msg] not in possible: 
+        await SendMessageWithButtons(update, context, 'You can\'t do that in the current situation! Please, choose one of the provided options', possible)
+        return
+
+    text, actions = gamemaster.MakeExplorationPlayerTurn(username, msg)
+    
+    actionsList = []
+    for action in actions:
+        actionsList.append([action])
+
+    context.user_data['possibleActions'] = actionsList
+
     await SendMessageWithButtons(update, context, text, actionsList)
 
 
@@ -162,6 +194,10 @@ async def ChooseMethodBasedOnState(update: Update, context: ContextTypes.DEFAULT
         case CharacterStateEnum.WaitingForCampaignStart:
             CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForPlayerAction)
             return await StartCampaign(update, context)
+        case CharacterStateEnum.Exploring:
+            return await MakeExplorationPlayerTurn(update, context)
+        case CharacterStateEnum.InBattle:
+            return await MakeExplorationPlayerTurn(update, context)
         case _:
             return await SendMessageWithButtons(update, context, f'Unknown state: {state}', None)
          
