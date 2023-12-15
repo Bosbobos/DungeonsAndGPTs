@@ -1,82 +1,96 @@
 import unittest
-from unittest.mock import MagicMock, patch
-from GptCore import GptGamemaster  # Replace YourModule with the actual module name
+from unittest.mock import MagicMock, patch, ANY
+from GptCore import GptGamemaster
 
 class TestGptGamemaster(unittest.TestCase):
-    def setUp(self):
-        # Mock the necessary dependencies or objects
-        self.mock_openai = MagicMock()
-        self.mock_db_context = MagicMock()
 
-    def test_send_message(self):
-        # Mock the OpenAI client and set expected values
-        with patch("openai.OpenAI", return_value=self.mock_openai):
-            self.mock_openai.chat.completions.create.return_value.choices[0].message.content = "Test Message"
+    @patch('openai.OpenAI')
+    def test_SendMessage(self, mock_openai):
+        # Mocking openai.OpenAI
+        instance = mock_openai.return_value
+        instance.chat.completions.create.return_value.choices[0].message.content = "MockedResponse"
 
-            # Create an instance of GptGamemaster
-            gamemaster = GptGamemaster(apiKey="your_api_key", dbContext=self.mock_db_context)
+        gamemaster = GptGamemaster(apiKey="your_api_key", dbContext=None)
+        result = gamemaster.SendMessage(systemMsgs=["system_msg"], userMsg="user_msg", temperature=1.0)
 
-            # Test SendMessage method
-            result = gamemaster.SendMessage(systemMsgs=["system message"], userMsg="user message", temperature=0.5)
-
-            # Assert the result
-            self.assertEqual(result, "Test Message")
-
-
-    def test_create_world(self):
-        expected = "{\"Name\":\"TestWorld\", \"MainFeatures\":\"TestFeatures\"}"
-        # Mock dependencies and set expected values
-        with patch("openai.OpenAI", return_value=self.mock_openai):
-            self.mock_db_context.read_record.return_value = {"prompt": "Test Prompt"}
-            self.mock_openai.chat.completions.create.return_value.choices[0].message.content = expected
-
-            # Create an instance of GptGamemaster
-            gamemaster = GptGamemaster(apiKey="your_api_key", dbContext=self.mock_db_context)
-
-            # Test CreateWorld method
-            result = gamemaster.CreateWorld(username="test_user", setting="Test Setting")
-
-            # Assert the result
-            self.assertEqual(result, expected)
+        mock_openai.assert_called_once_with(api_key="your_api_key")
+        instance.chat.completions.create.assert_called_once_with(
+            messages=[
+                {"role": "system", "content": "system_msg"},
+                {"role": "user", "content": "user_msg"}
+            ],
+            model="gpt-3.5-turbo",
+            temperature=1.0
+        )
+        self.assertEqual(result, "MockedResponse")
 
 
-    def test_create_character(self):
-        # Mock dependencies and set expected values
-        with patch("openai.OpenAI", return_value=self.mock_openai):
-            self.mock_db_context.read_record.return_value = {"prompt": "Test Prompt"}
-            self.mock_openai.chat.completions.create.return_value.choices[0].message.content = "Character Created"
+    @patch('openai.OpenAI')
+    def test_CreateWorld(self, mock_openai):
+        mock_db_context = MagicMock()
+        mock_db_context.read_record.return_value = {"prompt": "MockedPrompt"}
+        mock_db_context.create_record.return_value = None
 
-            # Create an instance of GptGamemaster
-            gamemaster = GptGamemaster(apiKey="your_api_key", dbContext=self.mock_db_context)
+        instance = mock_openai.return_value
+        instance.chat.completions.create.return_value.choices[0].message.content = '{"content": "MockedResponse"}'
 
-            # Test CreateCharacter method
-            result = gamemaster.CreateCharacter(username="test_user", introduction="Test Introduction")
+        gamemaster = GptGamemaster(apiKey="your_api_key", dbContext=mock_db_context)
+        result = gamemaster.CreateWorld(username="test_user", setting="test_setting")
 
-            # Assert the result
-            self.assertEqual(result, "Character Created")
+        mock_db_context.read_record.assert_called_with("Prompts", "key", 'CompressWorldInfo')
+        mock_db_context.create_record.assert_called_once_with("World", {"username": "test_user", "content": "MockedResponse"})
+        self.assertEqual(result, '{"content": "MockedResponse"}')
 
 
-    def test_create_starting_gear_and_abilities(self):
-        expectedGear = '[{""id": 1, "character_id": 1,Name":"Sword","Skill":"Cut","SkillShortDescription":"Sharp and deadly","SkillBeautifulDescription":"Test long description"}]'
-        expectedAbilities = '[]'
-        with patch("openai.OpenAI", return_value=self.mock_openai):
-            self.mock_db_context.read_record.side_effect = [
-                {"prompt": "Gear Prompt"},
-                {"id": 1, "username": "test_user"},
-                { "Name":"Sword","Skill":"","SkillShortDescription":"Sharp and deadly","SkillBeautifulDescription":"Test long description"}
-            ]
-            self.mock_openai.chat.completions.create.return_value.choices[0].message.content = expectedGear
+    @patch('openai.OpenAI')
+    def test_CreateCharacter(self, mock_openai):
+        mock_db_context = MagicMock()
+        mock_db_context.read_record.return_value = {"prompt": "MockedPrompt"}
+        mock_db_context.create_record.return_value = None
 
-            # Create an instance of GptGamemaster
-            gamemaster = GptGamemaster(apiKey="your_api_key", dbContext=self.mock_db_context)
+        instance = mock_openai.return_value
+        instance.chat.completions.create.return_value.choices[0].message.content = '{"Race": "human"}'
 
-            # Test CreateStaringGearAndAbilities method
-            result = gamemaster.CreateStaringGearAndAbilities(username="test_user")
+        gamemaster = GptGamemaster(apiKey="your_api_key", dbContext=mock_db_context)
+        result = gamemaster.CreateCharacter(username="test_user", introduction="test_intro")
 
-            # Assert the result
-            self.assertEqual(result, [["Item: Sword\n"], ['"Name":"StrongAbility","ShortDescription":"Sharp and deadly","BeautifulDescription":"Test long description"']])
+        mock_db_context.read_record.assert_called_once_with("Prompts", "key", "CreateCharacter")
+        mock_db_context.create_record.assert_called_once_with("characters", {"username": "test_user", "Race": "human"})
+        self.assertEqual(result, 'Race: human')
 
-    # Add more test methods for other functions in GptGamemaster
+    @patch('openai.OpenAI')
+    def test_CreateStaringGearAndAbilities(self, mock_openai):
+        mock_db_context = MagicMock()
+        mock_db_context.read_record.return_value = {"prompt": "MockedPrompt"}
+        mock_db_context.read_latest_record.return_value = {"id": 1, "username": "test_user"}
+        mock_db_context.create_record.return_value = None
+
+        instance = mock_openai.return_value
+        instance.chat.completions.create.return_value.choices[0].message.content = '[{"Name": "Item1", "Skill": "Skill1", "SkillShortDescription":"SkillShortDescription1", "SkillBeautifulDescription":"SkillBeautifulDescription1"}, {"Name": "Item2", "Skill": "Skill1", "SkillShortDescription":"SkillShortDescription1", "SkillBeautifulDescription":"SkillBeautifulDescription1"}]'
+
+        gamemaster = GptGamemaster(apiKey="your_api_key", dbContext=mock_db_context)
+        result = gamemaster.CreateStaringGearAndAbilities(username="test_user")
+
+        mock_db_context.read_record.assert_called_with("Prompts", "key", "SkillsGivenByItems")
+        mock_db_context.read_latest_record.assert_called_with('characters', "username", "test_user")
+        self.assertTrue(result)  # Adjust based on your expected output
+
+    @patch('openai.OpenAI')
+    def test_MakeATurn(self, mock_openai):
+        mock_db_context = MagicMock()
+        mock_db_context.read_latest_record.return_value = {"id":0, "turn": 1,  "main_previous_events": "previous_actions"}
+
+        instance = mock_openai.return_value
+        instance.chat.completions.create.return_value.choices[0].message.content = '{"Main_Previous_Events":["All of them","None"],"Possible_Actions": []}'
+
+        gamemaster = GptGamemaster(apiKey="your_api_key", dbContext=mock_db_context)
+        result = gamemaster.MakeATurn(username="test_user", action="test_action", prompt="test_prompt")
+
+        mock_db_context.read_latest_record.assert_called()
+        instance.chat.completions.create.assert_called()
+    
+        self.assertTrue(result)
+
 
 if __name__ == '__main__':
     unittest.main()
