@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html>
+  
+
+  <head>
+    
+    <title>DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum</title>
+    <meta name="generator" content="pydoctor 23.9.1"> 
+        
+    </meta>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1" />
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="apidocs.css" />
+    <link rel="stylesheet" type="text/css" href="extra.css" />
+</head>
+
+  <body>
+
+    
+
+    <nav class="navbar navbar-default mainnavbar">
+      
+  
+  <div class="container-fluid">
+
+
+    <div class="navbar-header">
+      
+      <div class="navlinks">
+        <span class="navbar-brand">
+          DungeonsAndGPTs <a href="index.html">API Documentation</a>
+        </span>
+
+        <a href="moduleIndex.html">
+          Modules
+        </a>
+
+        <a href="classIndex.html">
+          Classes
+        </a>
+
+        <a href="nameIndex.html">
+          Names
+        </a>
+
+        <div id="search-box-container">
+          <div class="input-group">
+            <input id="search-box" type="search" name="search-query" placeholder="Search..." aria-label="Search" minlength="2" class="form-control" autocomplete="off" />
+            
+            <span class="input-group-btn">
+              <a style="display: none;" class="btn btn-default" id="search-clear-button" title="Clear" onclick="clearSearch()"><img src="fonts/x-circle.svg" alt="Clear" /></a>
+              <a class="btn btn-default" id="search-help-button" title="Help" onclick="toggleSearchHelpText()"><img src="fonts/info.svg" alt="Help" /></a>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="search-results-container" style="display: none;">
+        
+        <div id="search-buttons">
+          <span class="label label-default" id="search-docstrings-button">
+          <label class="checkbox-inline">
+            <input type="checkbox" id="toggle-search-in-docstrings-checkbox" value="false" onclick="toggleSearchInDocstrings()">
+              search in docstrings
+            </input>
+          </label>
+          </span>
+          
+        </div>
+        
+        <noscript>
+            <h1>Cannot search: JavaScript is not supported/enabled in your browser.</h1>
+        </noscript>
+
+        <div class="hint" id="search-help-box">
+          <p class="rst-last">
+      
+            Search bar offers the following options:
+            <ul>   
+                <li>
+                  <strong>Term presence.</strong> The below example searches for documents that 
+                    must contain “foo”, might contain “bar” and must not contain “baz”: <code>+foo bar -baz</code>
+                </li> 
+
+                <li>
+                  <strong>Wildcards.</strong> The below example searches for documents with words beginning with “foo”: <code>foo*</code>
+                </li> 
+
+                <li>
+                  <strong>Search in specific fields.</strong> The following search matches all objects 
+                  in "twisted.mail" that matches “search”: <code>+qname:twisted.mail.* +search</code>
+
+                  <p>
+                    Possible fields: 'name', 'qname' (fully qualified name), 'docstring', and 'kind'.
+                    Last two fields are only applicable if "search in docstrings" is enabled.
+                  </p>
+                </li>
+
+                <li>
+                  <strong>Fuzzy matches.</strong> The following search matches all documents 
+                  that have a word within 1 edit distance of “foo”: <code>foo~1</code>
+                </li>
+            </ul>
+
+          </p>
+        </div>
+
+        <div id="search-status"> </div>
+
+        <div class="warning" id="search-warn-box" style="display: none;">
+          <p class="rst-last"><span id="search-warn"></span></p>
+        </div>
+
+        <table id="search-results">
+          <!-- Filled dynamically by JS -->
+        </table>
+        
+        <div style="margin-top: 8px;">
+          <p>Results provided by <a href="https://lunrjs.com">Lunr.js</a></p>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+</nav>
+    
+    <div class="container-fluid">
+
+      <!-- Side navigation -->
+      <div class="sidebarcontainer" style="display: none;">
+        
+        <div class="sidebar"><nav class="sidebar">
+  
+
+  <div>
+
+      <div class="thingTitle">
+        <span>Class</span>
+        <code class="thisobject"><a href="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.html" class="internal-link" title="This class"><wbr></wbr>Character<wbr></wbr>State<wbr></wbr>Enum</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        
+        
+
+        
+         
+
+        
+         
+
+        <div class="childrenKindTitle">Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#CampaignEnded" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.CampaignEnded"><wbr></wbr>Campaign<wbr></wbr>Ended</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#Exploring" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.Exploring"><wbr></wbr>Exploring</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#FinalBossDefeated" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.FinalBossDefeated"><wbr></wbr>Final<wbr></wbr>Boss<wbr></wbr>Defeated</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#InBattle" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.InBattle"><wbr></wbr>In<wbr></wbr>Battle</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#InFinalBattle" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.InFinalBattle"><wbr></wbr>In<wbr></wbr>Final<wbr></wbr>Battle</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#WaitingForCampaignStart" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCampaignStart"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Campaign<wbr></wbr>Start</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#WaitingForCharacterCreationAssessment" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacterCreationAssessment"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Character<wbr></wbr>Creation<wbr></wbr>Assessment</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#WaitingForCharacterCreationInput" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacterCreationInput"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Character<wbr></wbr>Creation<wbr></wbr>Input</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#WaitingForCharacteristicChangeInput" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacteristicChangeInput"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Characteristic<wbr></wbr>Change<wbr></wbr>Input</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#WaitingForDmAction" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForDmAction"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Dm<wbr></wbr>Action</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#WaitingForEnemyAction" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForEnemyAction"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Enemy<wbr></wbr>Action</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#WaitingForGearCreation" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForGearCreation"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Gear<wbr></wbr>Creation</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#WaitingForPlayerAction" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForPlayerAction"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Player<wbr></wbr>Action</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#WaitingForWorldCreationInput" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForWorldCreationInput"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>World<wbr></wbr>Creation<wbr></wbr>Input</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+  </div><div>
+
+      <div class="thingTitle">
+        <span>Module</span>
+        <code><a href="DungeonsAndGPTs.CharacterStateEnum.html" class="internal-link" title="The parent of this class"><wbr></wbr>Character<wbr></wbr>State<wbr></wbr>Enum</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        <div class="childrenKindTitle">Classes</div>
+        <ul>
+    
+    <li class=" thisobject">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.html" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum"><wbr></wbr>Character<wbr></wbr>State<wbr></wbr>Enum</a></code>
+            </div>
+        
+
+    </li>
+</ul>
+
+        
+         
+
+        
+         
+
+        
+         
+
+        
+         
+        
+      </div>
+  </div>
+
+</nav>
+        </div>
+        <div id="collapseSideBar">
+          <a class="btn btn-link" onclick="toggleSideBarCollapse()" title="Toggle Sidebar Collapse">
+          </a>
+        </div> 
+        <script src="sidebartoggle.js" type="text/javascript"></script>
+       
+      </div>
+
+      <div id="main" class="">
+        
+
+        
+
+        <div class="page-header">
+          <h1 class="class"><code><code><a href="index.html" class="internal-link">DungeonsAndGPTs</a></code><wbr></wbr>.<code><a href="DungeonsAndGPTs.CharacterStateEnum.html" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum">CharacterStateEnum</a></code><wbr></wbr>.<code><a href="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.html" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum">CharacterStateEnum</a></code></code></h1>
+          <div id="showPrivate">
+            <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
+          </div>
+        </div>
+
+        <div class="categoryHeader">
+          class documentation
+        </div>
+
+        <div class="extrasDocstring">
+          <p class="class-signature"><code><span class="py-keyword">class</span> <span class="py-defname">CharacterStateEnum</span>(Enum):</code></p>
+          <p><a href="classIndex.html#DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum">View In Hierarchy</a></p>
+        </div>
+
+        <div class="moduleDocstring">
+          <div><p class="undocumented">Undocumented</p></div>
+        </div>
+
+        <div id="splitTables">
+          <table class="children sortable" id="id3">
+  
+  
+  <tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#CampaignEnded" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.CampaignEnded"><wbr></wbr>Campaign<wbr></wbr>Ended</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#Exploring" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.Exploring"><wbr></wbr>Exploring</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#FinalBossDefeated" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.FinalBossDefeated"><wbr></wbr>Final<wbr></wbr>Boss<wbr></wbr>Defeated</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#InBattle" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.InBattle"><wbr></wbr>In<wbr></wbr>Battle</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#InFinalBattle" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.InFinalBattle"><wbr></wbr>In<wbr></wbr>Final<wbr></wbr>Battle</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#WaitingForCampaignStart" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCampaignStart"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Campaign<wbr></wbr>Start</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#WaitingForCharacterCreationAssessment" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacterCreationAssessment"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Character<wbr></wbr>Creation<wbr></wbr>Assessment</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#WaitingForCharacterCreationInput" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacterCreationInput"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Character<wbr></wbr>Creation<wbr></wbr>Input</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#WaitingForCharacteristicChangeInput" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacteristicChangeInput"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Characteristic<wbr></wbr>Change<wbr></wbr>Input</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#WaitingForDmAction" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForDmAction"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Dm<wbr></wbr>Action</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#WaitingForEnemyAction" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForEnemyAction"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Enemy<wbr></wbr>Action</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#WaitingForGearCreation" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForGearCreation"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Gear<wbr></wbr>Creation</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#WaitingForPlayerAction" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForPlayerAction"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>Player<wbr></wbr>Action</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#WaitingForWorldCreationInput" class="internal-link" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForWorldCreationInput"><wbr></wbr>Waiting<wbr></wbr>For<wbr></wbr>World<wbr></wbr>Creation<wbr></wbr>Input</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr>
+</table>
+          
+
+            
+        </div>
+
+        <div id="childList">
+          <div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.CampaignEnded">
+    
+  </a>
+  <a name="CampaignEnded">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">CampaignEnded</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#CampaignEnded" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.CampaignEnded">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.Exploring">
+    
+  </a>
+  <a name="Exploring">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">Exploring</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#Exploring" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.Exploring">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.FinalBossDefeated">
+    
+  </a>
+  <a name="FinalBossDefeated">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">FinalBossDefeated</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#FinalBossDefeated" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.FinalBossDefeated">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.InBattle">
+    
+  </a>
+  <a name="InBattle">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">InBattle</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#InBattle" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.InBattle">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.InFinalBattle">
+    
+  </a>
+  <a name="InFinalBattle">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">InFinalBattle</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#InFinalBattle" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.InFinalBattle">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCampaignStart">
+    
+  </a>
+  <a name="WaitingForCampaignStart">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">WaitingForCampaignStart</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#WaitingForCampaignStart" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCampaignStart">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacterCreationAssessment">
+    
+  </a>
+  <a name="WaitingForCharacterCreationAssessment">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">WaitingForCharacterCreationAssessment</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#WaitingForCharacterCreationAssessment" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacterCreationAssessment">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacterCreationInput">
+    
+  </a>
+  <a name="WaitingForCharacterCreationInput">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">WaitingForCharacterCreationInput</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#WaitingForCharacterCreationInput" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacterCreationInput">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacteristicChangeInput">
+    
+  </a>
+  <a name="WaitingForCharacteristicChangeInput">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">WaitingForCharacteristicChangeInput</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#WaitingForCharacteristicChangeInput" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForCharacteristicChangeInput">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForDmAction">
+    
+  </a>
+  <a name="WaitingForDmAction">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">WaitingForDmAction</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#WaitingForDmAction" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForDmAction">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForEnemyAction">
+    
+  </a>
+  <a name="WaitingForEnemyAction">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">WaitingForEnemyAction</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#WaitingForEnemyAction" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForEnemyAction">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForGearCreation">
+    
+  </a>
+  <a name="WaitingForGearCreation">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">WaitingForGearCreation</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#WaitingForGearCreation" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForGearCreation">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForPlayerAction">
+    
+  </a>
+  <a name="WaitingForPlayerAction">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">WaitingForPlayerAction</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#WaitingForPlayerAction" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForPlayerAction">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForWorldCreationInput">
+    
+  </a>
+  <a name="WaitingForWorldCreationInput">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">WaitingForWorldCreationInput</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#WaitingForWorldCreationInput" title="DungeonsAndGPTs.CharacterStateEnum.CharacterStateEnum.WaitingForWorldCreationInput">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div>
+        </div>
+      
+      </div>
+    </div>
+
+    <footer class="navbar navbar-default">
+
+  
+  <div class="container">
+    <a href="index.html">API Documentation</a> for DungeonsAndGPTs,
+  generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
+    23.9.1 at 2023-12-16 01:32:40.
+  </div>
+
+  <!-- Search related scripts needs to be loaded at the end of HTML 
+    parsing not to introduce overhead and display HTML data asap -->
+  <script src="ajax.js" type="text/javascript"></script>
+  <script src="searchlib.js" type="text/javascript"></script>
+  <script src="search.js" type="text/javascript"></script>
+
+</footer>
+  
+    <script src="pydoctor.js" type="text/javascript"></script>
+
+  </body>
+</html>
