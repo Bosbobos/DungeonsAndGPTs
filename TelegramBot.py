@@ -25,7 +25,6 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 async def SendMessageWithButtons(update, context, message, buttons):
-    print(buttons)
     if buttons == None: replyButtons = ReplyKeyboardRemove()
     elif isinstance(buttons, dict): replyButtons = list(buttons.values)
     elif not isinstance(buttons, (list,tuple)): replyButtons = ReplyKeyboardMarkup([[buttons]], one_time_keyboard=True, resize_keyboard=True)
@@ -174,10 +173,59 @@ async def MakeExplorationPlayerTurn(update: Update, context: ContextTypes.DEFAUL
 
     await SendMessageWithButtons(update, context, text, actionsList)
 
+    try:
+        if context.user_data['FinalBattle'] == 'Started': return await FinishTheCampaign(update,context)
+    except KeyError:
+        pass
+
+
+async def StartFinalBattle(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    username = update.message.from_user['username']
+    msg = update.message.text
+    try:
+        possible = context.user_data['possibleActions']
+    except KeyError:
+        possible = dbContext.read_latest_record('character_state', 'username', username)['possible_actions']
+    possibleButtons = [[x] for x in possible]
+
+    if msg not in possible and [msg] not in possible and not any(msg.rstrip('...').rstrip('…') in x for x in possible): 
+        await SendMessageWithButtons(update, context, 'You can\'t do that in the current situation! Please, choose one of the provided options', possibleButtons)
+        return
+
+    context.user_data['FinalBattle'] = 'Started'
+    text, actions = gamemaster.StartFinalFight(username, msg)
+    
+    actionsList = []
+    for action in actions:
+        actionsList.append([action])
+
+    context.user_data['possibleActions'] = actionsList
+
+    await SendMessageWithButtons(update, context, text, actionsList)
+
+
+async def FinishTheCampaign(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    username = update.message.from_user['username']
+    CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.CampaignEnded)
+
+    message, actions = gamemaster.FinishTheCampaign(username)
+
+    await SendMessageWithButtons(update, context, message, [['To the new adventures!']])
+
 
 async def ChooseMethodBasedOnState(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = update.message.from_user['username']
     state = CharacterStateTracker.GetCharacterState(dbContext, username)
+
+    turns = dbContext.read_latest_record('character_state', 'username', username)['turn']
+    if turns >= 10:
+        try:
+            if context.user_data['FinalBattle'] == 'Started' and state == CharacterStateEnum.Exploring: 
+                return await FinishTheCampaign(update, context)
+        except KeyError:
+            context.user_data['FinalBattle'] = 'Started'
+            CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.InFinalBattle)
+            return await StartFinalBattle(update, context)
     match state:
         case x if x == None or x == CharacterStateEnum.CampaignEnded:
             CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForWorldCreationInput)
@@ -197,8 +245,13 @@ async def ChooseMethodBasedOnState(update: Update, context: ContextTypes.DEFAULT
             CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForPlayerAction)
             return await StartCampaign(update, context)
         case CharacterStateEnum.Exploring:
-            return await MakeExplorationPlayerTurn(update, context)
+            try:
+                if context.user_data['FinalBattle'] == 'Started': return await FinishTheCampaign(update,context)
+            except KeyError:
+                return await MakeExplorationPlayerTurn(update, context)
         case CharacterStateEnum.InBattle:
+            return await MakeExplorationPlayerTurn(update, context)
+        case CharacterStateEnum.InFinalBattle:
             return await MakeExplorationPlayerTurn(update, context)
         case _:
             return await SendMessageWithButtons(update, context, f'Unknown state: {state}', None)
