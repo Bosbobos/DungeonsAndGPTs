@@ -143,7 +143,7 @@ class GptGamemaster:
         self.dbContext.create_record(tableName, newansDict)
 
 
-    def __saveCompressedInformationAboutATurn(self, username, turnInfo,  worldJson, characterJson, abilitiesJson, previousActions):
+    def __saveCompressedInformationAboutATurn(self, username, turnInfo,  worldJson, characterJson, abilitiesJson, previousActions, turn):
         sysMsgs = [self.dbContext.read_record("Prompts", "key", "CompressTurnInfo")["prompt"]]
         world = 'Here is the information about the world in which the campaign is set in ' + worldJson
         character = 'Here is the information about the character who performed the turn ' + characterJson
@@ -166,6 +166,7 @@ class GptGamemaster:
             desc = self.SendMessage(prompt, events, 0)
             info['Main_Previous_Events'] = desc
         info['Main_Previous_Events'] = previousActions + ' ' + events
+        newInfoDict = self.__addSmthToDict('turn', turn+1, info)        
         newInfoDict = self.__addSmthToDict('username', username, info)
         self.dbContext.update_latest_record('Character_State', 'username', username, newInfoDict)
 
@@ -191,7 +192,7 @@ class GptGamemaster:
         state = self.dbContext.read_latest_record("character_state", "username", username)
         previousActions = state['main_previous_events']
 
-        possibleActions = self.__saveCompressedInformationAboutATurn(username, CampaignStart, worldJson, characterJson, abilitiesJson, previousActions)
+        possibleActions = self.__saveCompressedInformationAboutATurn(username, CampaignStart, worldJson, characterJson, abilitiesJson, previousActions, 0)
 
         return [CampaignStart, possibleActions]
     
@@ -202,6 +203,9 @@ class GptGamemaster:
         worldJson = Converter.FilteredDictToJson(worldInfo, ['id', 'username'])
         characterJson = Converter.FilteredDictToJson(character, ['id', 'username'])
 
+        state = self.dbContext.read_latest_record("character_state", "username", username)
+        turn = state['turn']
+
         abilities = self.dbContext.read_all_records("abilities", "character_id", character['id'])
         abilitiesJson = ''
         for ability in abilities:
@@ -211,15 +215,14 @@ class GptGamemaster:
         characterStr = 'Here is the information about the character who performed the turn ' + characterJson
         abilitiesStr = 'Here are the abilities the character has ' + abilitiesJson
 
-        sysMsgs = [self.dbContext.read_record("Prompts", "key", "DescribeExploration")["prompt"]]
+        sysMsgs = [self.dbContext.read_record("Prompts", "key", "DescribeExploration")["prompt"].replace('TURNNUMBER', str(turn)).replace('TOTALTURNS', '10')]
         sysMsgs += [worldStr, characterStr, abilitiesStr]
 
         TurnDescription = self.SendMessage(sysMsgs, action, 1)
 
-        state = self.dbContext.read_latest_record("character_state", "username", username)
         previousActions = state['main_previous_events']
 
-        possibleActions = self.__saveCompressedInformationAboutATurn(username, TurnDescription, worldJson, characterJson, abilitiesJson, previousActions)
+        possibleActions = self.__saveCompressedInformationAboutATurn(username, TurnDescription, worldJson, characterJson, abilitiesJson, previousActions, turn)
 
         return [TurnDescription, possibleActions]
     

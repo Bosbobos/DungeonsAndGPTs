@@ -1,5 +1,5 @@
 import logging
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
 import json
 from GptCore import GptGamemaster
@@ -25,6 +25,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 async def SendMessageWithButtons(update, context, message, buttons):
+    print(buttons)
     if buttons == None: replyButtons = ReplyKeyboardRemove()
     elif isinstance(buttons, dict): replyButtons = list(buttons.values)
     elif not isinstance(buttons, (list,tuple)): replyButtons = ReplyKeyboardMarkup([[buttons]], one_time_keyboard=True, resize_keyboard=True)
@@ -157,9 +158,10 @@ async def MakeExplorationPlayerTurn(update: Update, context: ContextTypes.DEFAUL
         possible = context.user_data['possibleActions']
     except KeyError:
         possible = dbContext.read_latest_record('character_state', 'username', username)['possible_actions']
-    
-    if msg not in possible and [msg] not in possible: 
-        await SendMessageWithButtons(update, context, 'You can\'t do that in the current situation! Please, choose one of the provided options', possible)
+    possibleButtons = [[x] for x in possible]
+
+    if msg not in possible and [msg] not in possible and not any(msg.rstrip('...').rstrip('…') in x for x in possible): 
+        await SendMessageWithButtons(update, context, 'You can\'t do that in the current situation! Please, choose one of the provided options', possibleButtons)
         return
 
     text, actions = gamemaster.MakeExplorationPlayerTurn(username, msg)
