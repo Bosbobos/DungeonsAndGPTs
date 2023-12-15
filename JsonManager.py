@@ -1,6 +1,17 @@
 import json
 
 def ExtractJson(input_string):
+    """
+    Extract JSON data from a given input string or its substring, if possible. If not, raises a ValueError
+
+    @param input_string: The input string containing JSON data.
+    @type input_string: str
+
+    @return: The parsed JSON data.
+    @rtype: dict
+
+    @raise ValueError: If the input string does not contain a valid JSON.
+    """
     try:
         json_data = json.loads(input_string)
         return json_data
