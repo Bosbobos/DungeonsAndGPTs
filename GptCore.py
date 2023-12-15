@@ -166,8 +166,8 @@ class GptGamemaster:
             desc = self.SendMessage(prompt, events, 0)
             info['Main_Previous_Events'] = desc
         info['Main_Previous_Events'] = previousActions + ' ' + events
-        newInfoDict = self.__addSmthToDict('turn', turn+1, info)        
-        newInfoDict = self.__addSmthToDict('username', username, info)
+        infoDict = self.__addSmthToDict('turn', turn+1, info)        
+        newInfoDict = self.__addSmthToDict('username', username, infoDict)
         self.dbContext.update_latest_record('Character_State', 'username', username, newInfoDict)
 
         return info['Possible_Actions']
@@ -189,15 +189,12 @@ class GptGamemaster:
         for ability in abilities:
             abilitiesJson += Converter.FilteredDictToJson(ability, ['id', 'character_id', 'beautifuldescription'])
 
-        state = self.dbContext.read_latest_record("character_state", "username", username)
-        previousActions = state['main_previous_events']
-
-        possibleActions = self.__saveCompressedInformationAboutATurn(username, CampaignStart, worldJson, characterJson, abilitiesJson, previousActions, 0)
+        possibleActions = self.__saveCompressedInformationAboutATurn(username, CampaignStart, worldJson, characterJson, abilitiesJson, '', 0)
 
         return [CampaignStart, possibleActions]
     
 
-    def MakeExplorationPlayerTurn(self, username, action):
+    def MakeATurn(self, username, action, prompt):
         worldInfo = self.dbContext.read_latest_record("world", "username", username)
         character = self.dbContext.read_latest_record("characters", "username", username)
         worldJson = Converter.FilteredDictToJson(worldInfo, ['id', 'username'])
@@ -205,6 +202,7 @@ class GptGamemaster:
 
         state = self.dbContext.read_latest_record("character_state", "username", username)
         turn = state['turn']
+        previousActions = state['main_previous_events']
 
         abilities = self.dbContext.read_all_records("abilities", "character_id", character['id'])
         abilitiesJson = ''
@@ -214,15 +212,37 @@ class GptGamemaster:
         worldStr = 'Here is the information about the world in which the campaign is set in ' + worldJson
         characterStr = 'Here is the information about the character who performed the turn ' + characterJson
         abilitiesStr = 'Here are the abilities the character has ' + abilitiesJson
+        prevActionsStr = 'Here is a short summary of previous turns' + previousActions
 
-        sysMsgs = [self.dbContext.read_record("Prompts", "key", "DescribeExploration")["prompt"].replace('TURNNUMBER', str(turn)).replace('TOTALTURNS', '10')]
-        sysMsgs += [worldStr, characterStr, abilitiesStr]
+        sysMsgs = [prompt]
+        sysMsgs += [worldStr, characterStr, abilitiesStr, prevActionsStr]
 
         TurnDescription = self.SendMessage(sysMsgs, action, 1)
-
-        previousActions = state['main_previous_events']
 
         possibleActions = self.__saveCompressedInformationAboutATurn(username, TurnDescription, worldJson, characterJson, abilitiesJson, previousActions, turn)
 
         return [TurnDescription, possibleActions]
+
+
+    def MakeExplorationPlayerTurn(self, username, action):
+        state = self.dbContext.read_latest_record("character_state", "username", username)
+        turn = state['turn']
+        prompt = self.dbContext.read_record("Prompts", "key", "DescribeExploration")["prompt"].replace('TURNNUMBER', str(turn)).replace('TOTALTURNS', '10')
+
+        return self.MakeATurn(username, action, prompt)
+    
+
+    def StartFinalFight(self, username, interruptedAction):
+        prompt = self.dbContext.read_record("Prompts", "key", "StartFinalFight")["prompt"]
+
+        return self.MakeATurn(username, interruptedAction, prompt)
+    
+
+    def FinishTheCampaign(self, username):
+        state = self.dbContext.read_latest_record("character_state", "username", username)
+        previousActions = state['main_previous_events']
+
+        prompt = self.dbContext.read_record("Prompts", "key", "FinishTheCampaign")["prompt"]
+
+        return self.MakeATurn(username, '', prompt)
     

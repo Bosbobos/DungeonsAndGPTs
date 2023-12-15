@@ -12,4 +12,6 @@ class CharacterStateEnum(Enum):
     InBattle = 'InBattle'
     WaitingForDmAction = 'WaitingForDmAction'
     WaitingForEnemyAction = 'WaitingForEnemyAction'
+    InFinalBattle = 'InFinalBattle'
+    FinalBossDefeated = 'FinalBossDefeated'
     CampaignEnded = 'CampaignEnded'
