@@ -189,10 +189,7 @@ class GptGamemaster:
         for ability in abilities:
             abilitiesJson += Converter.FilteredDictToJson(ability, ['id', 'character_id', 'beautifuldescription'])
 
-        state = self.dbContext.read_latest_record("character_state", "username", username)
-        previousActions = state['main_previous_events']
-
-        possibleActions = self.__saveCompressedInformationAboutATurn(username, CampaignStart, worldJson, characterJson, abilitiesJson, previousActions, 0)
+        possibleActions = self.__saveCompressedInformationAboutATurn(username, CampaignStart, worldJson, characterJson, abilitiesJson, '', 0)
 
         return [CampaignStart, possibleActions]
     

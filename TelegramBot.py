@@ -47,6 +47,7 @@ async def SendGptMessage(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def StartWorldCreation(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data['FinalBattle'] = 'Ahead'
     message = 'Hello there, traveler! In what setting will your adventure go? You can choose one of the variants below, as well as type your own'
     buttons = [['Fantasy'], ['Future'], ['Sci-fi']]
     await SendMessageWithButtons(update, context, message, buttons)
@@ -210,6 +211,8 @@ async def FinishTheCampaign(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     message, actions = gamemaster.FinishTheCampaign(username)
 
+    context.user_data['FinalBattle'] = 'Ended'
+
     await SendMessageWithButtons(update, context, message, [['To the new adventures!']])
 
 
@@ -242,11 +245,13 @@ async def ChooseMethodBasedOnState(update: Update, context: ContextTypes.DEFAULT
             CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForCharacterCreationAssessment)
             return await ChangeCharacterInfo(update, context)
         case CharacterStateEnum.WaitingForCampaignStart:
-            CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.WaitingForPlayerAction)
+            CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.Exploring)
             return await StartCampaign(update, context)
         case CharacterStateEnum.Exploring:
             try:
                 if context.user_data['FinalBattle'] == 'Started': return await FinishTheCampaign(update,context)
+                elif context.user_data['FinalBattle'] == 'Ended': return await StartWorldCreation(update, context)
+                else: return await MakeExplorationPlayerTurn(update, context)
             except KeyError:
                 return await MakeExplorationPlayerTurn(update, context)
         case CharacterStateEnum.InBattle:

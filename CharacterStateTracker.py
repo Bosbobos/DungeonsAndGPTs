@@ -1,7 +1,7 @@
 from CharacterStateEnum import CharacterStateEnum
 
 def SetCharacterState(dbContext, username, state):
-    if state == None:
+    if state == None or state == CharacterStateEnum.WaitingForWorldCreationInput:
         info = {'Username': username, "current_state": state.name, 'turn':0}
         dbContext.create_record('character_state', info)
     else:
