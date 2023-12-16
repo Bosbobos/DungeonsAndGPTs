@@ -3,6 +3,7 @@ import json
 import psycopg2
 from DbContext import DbContext  # Замените "your_module" на имя вашего модуля
 
+
 class TestDbContext(unittest.TestCase):
     def setUp(self):
         # Чтение настроек из файла appsettings.json
@@ -58,23 +59,28 @@ class TestDbContext(unittest.TestCase):
         self.db_context.create_record('your_table_name', record_data)
 
         # Читаем созданную запись
-        read_record = self.db_context.read_record('your_table_name', 'column1', 'value1')
+        read_record = self.db_context.read_record(
+            'your_table_name', 'column1', 'value1')
         self.assertIsNotNone(read_record)
 
         # Обновляем созданную запись
         update_data = {'column2': 'updated_value'}
-        self.db_context.update_record('your_table_name', 'column1', 'value1', update_data)
+        self.db_context.update_record(
+            'your_table_name', 'column1', 'value1', update_data)
 
         # Проверяем, что запись была успешно обновлена
-        updated_record = self.db_context.read_record('your_table_name', 'column1', 'value1')
+        updated_record = self.db_context.read_record(
+            'your_table_name', 'column1', 'value1')
         self.assertEqual(updated_record['column2'], 'updated_value')
 
         # Удаляем созданную запись
         self.db_context.delete_record('your_table_name', 'column1', 'value1')
 
         # Проверяем, что запись успешно удалена
-        deleted_record = self.db_context.read_record('your_table_name', 'column1', 'value1')
+        deleted_record = self.db_context.read_record(
+            'your_table_name', 'column1', 'value1')
         self.assertIsNone(deleted_record)
+
 
 if __name__ == '__main__':
     unittest.main()

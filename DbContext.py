@@ -1,6 +1,7 @@
 import psycopg2
 from psycopg2 import sql
 
+
 class DbContext:
     def __init__(self, dbname, user, password, host, port):
         self.dbname = dbname
@@ -23,7 +24,8 @@ class DbContext:
         cursor = conn.cursor()
         columns = ', '.join(record_data.keys())
         values = ', '.join(['%s' for _ in record_data.values()])
-        query = sql.SQL(f"INSERT INTO {table_name} ({columns}) VALUES ({values})")
+        query = sql.SQL(f"INSERT INTO {table_name} ({
+                        columns}) VALUES ({values})")
         cursor.execute(query, tuple(record_data.values()))
         conn.commit()
         cursor.close()
@@ -49,7 +51,8 @@ class DbContext:
         conn = self.connect()
         cursor = conn.cursor()
         set_clause = ', '.join([f"{key} = %s" for key in updates.keys()])
-        query = sql.SQL(f"UPDATE {table_name} SET {set_clause} WHERE {search_by_column} = %s")
+        query = sql.SQL(f"UPDATE {table_name} SET {
+                        set_clause} WHERE {search_by_column} = %s")
         cursor.execute(query, tuple(updates.values()) + (search_value,))
         conn.commit()
         cursor.close()
@@ -58,7 +61,8 @@ class DbContext:
     def delete_record(self, table_name, search_by_column, search_value):
         conn = self.connect()
         cursor = conn.cursor()
-        query = sql.SQL(f"DELETE FROM {table_name} WHERE {search_by_column} = %s")
+        query = sql.SQL(f"DELETE FROM {table_name} WHERE {
+                        search_by_column} = %s")
         cursor.execute(query, (search_value,))
         conn.commit()
         cursor.close()
@@ -68,7 +72,8 @@ class DbContext:
         conn = self.connect()
         cursor = conn.cursor()
 
-        query = sql.SQL(f"SELECT * FROM {table_name} WHERE {column_name} = %s ORDER BY id DESC LIMIT 1")
+        query = sql.SQL(
+            f"SELECT * FROM {table_name} WHERE {column_name} = %s ORDER BY id DESC LIMIT 1")
         cursor.execute(query, (search_value,))
 
         record = cursor.fetchone()
@@ -86,19 +91,21 @@ class DbContext:
         conn = self.connect()
         cursor = conn.cursor()
 
-        select_latest_id_query = sql.SQL(f"SELECT id FROM {table_name} WHERE {search_by_column} = %s ORDER BY id DESC LIMIT 1")
+        select_latest_id_query = sql.SQL(f"SELECT id FROM {table_name} WHERE {
+                                         search_by_column} = %s ORDER BY id DESC LIMIT 1")
         cursor.execute(select_latest_id_query, (search_value,))
         latest_id = cursor.fetchone()
 
         if latest_id:
             set_clause = ', '.join([f"{key} = %s" for key in updates.keys()])
-            update_query = sql.SQL(f"UPDATE {table_name} SET {set_clause} WHERE id = %s")
-            cursor.execute(update_query, tuple(updates.values()) + (latest_id[0],))
+            update_query = sql.SQL(f"UPDATE {table_name} SET {
+                                   set_clause} WHERE id = %s")
+            cursor.execute(update_query, tuple(
+                updates.values()) + (latest_id[0],))
             conn.commit()
 
         cursor.close()
         conn.close()
-    
 
     def read_all_records(self, table_name, column_name, search_value):
         conn = self.connect()

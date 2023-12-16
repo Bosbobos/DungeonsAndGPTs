@@ -1,5 +1,6 @@
 from CharacterStateEnum import CharacterStateEnum
 
+
 def SetCharacterState(dbContext, username, state):
     """
     Set the current state of a character in the campaign.
@@ -19,10 +20,12 @@ def SetCharacterState(dbContext, username, state):
     @return: None
     """
     if state == None or state == CharacterStateEnum.WaitingForWorldCreationInput:
-        info = {'Username': username, "current_state": state.name, 'turn':0}
+        info = {'Username': username, "current_state": state.name, 'turn': 0}
         dbContext.create_record('character_state', info)
     else:
-        dbContext.update_latest_record('character_state', 'username', username, {"current_state": state.name})
+        dbContext.update_latest_record('character_state', 'username', username, {
+                                       "current_state": state.name})
+
 
 def GetCharacterState(dbContext, username):
     """
@@ -40,10 +43,10 @@ def GetCharacterState(dbContext, username):
     @return: The current state of the character or None if the character state is not found.
     @rtype: CharacterStateEnum or None
     """
-    record = dbContext.read_latest_record('character_state', 'username', username)
-    if record: 
+    record = dbContext.read_latest_record(
+        'character_state', 'username', username)
+    if record:
         state = record['current_state']
         return CharacterStateEnum[state]
-    else: 
+    else:
         return None
-    

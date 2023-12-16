@@ -1,5 +1,6 @@
 import json
 
+
 def ExtractJson(input_string):
     """
     Extract JSON data from a given input string or its substring, if possible. If not, raises a ValueError
@@ -18,7 +19,7 @@ def ExtractJson(input_string):
     except json.JSONDecodeError:
         start_index = input_string.find('{')
         end_index = input_string.rfind('}')
-        
+
         if start_index != -1 and end_index != -1:
             json_str = input_string[start_index:end_index + 1]
             try:
@@ -28,4 +29,3 @@ def ExtractJson(input_string):
                 raise ValueError("Invalid JSON format")
         else:
             raise ValueError("No JSON found in the input string")
-        

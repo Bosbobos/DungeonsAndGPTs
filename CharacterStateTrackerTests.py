@@ -1,6 +1,7 @@
 import unittest
 from CharacterStateTracker import SetCharacterState, CharacterStateEnum
 
+
 class MockDbContext:
     def __init__(self):
         self.data = {}

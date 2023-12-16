@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class CharacterStateEnum(Enum):
     WaitingForWorldCreationInput = 'WaitingForWorldCreationInput'
     WaitingForCharacterCreationInput = 'WaitingForCharacterCreationInput'
