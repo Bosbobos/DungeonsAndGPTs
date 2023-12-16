@@ -158,7 +158,10 @@ async def MakeExplorationPlayerTurn(update: Update, context: ContextTypes.DEFAUL
         possible = context.user_data['possibleActions']
     except KeyError:
         possible = dbContext.read_latest_record('character_state', 'username', username)['possible_actions']
-    possibleButtons = [[x] for x in possible]
+    if not all(isinstance(button, list) for button in possible):
+        possibleButtons = [[x] for x in possible]
+    else:
+        possibleButtons = possible
 
     if msg not in possible and [msg] not in possible and not any(msg.rstrip('...').rstrip('…') in x for x in possible): 
         await SendMessageWithButtons(update, context, 'You can\'t do that in the current situation! Please, choose one of the provided options', possibleButtons)
@@ -207,9 +210,10 @@ async def StartFinalBattle(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def FinishTheCampaign(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = update.message.from_user['username']
-    CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.CampaignEnded)
 
     message, actions = gamemaster.FinishTheCampaign(username)
+    CharacterStateTracker.SetCharacterState(dbContext, username, CharacterStateEnum.CampaignEnded)
+
 
     context.user_data['FinalBattle'] = 'Ended'
 
