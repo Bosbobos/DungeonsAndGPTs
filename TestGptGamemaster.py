@@ -109,6 +109,68 @@ class TestGptGamemaster(unittest.TestCase):
 
         self.assertTrue(result)
 
+    @patch('openai.OpenAI')
+    def test_CreateWorld_Exception(self, mock_openai):
+        mock_db_context = MagicMock()
+        mock_db_context.read_record.return_value = {"prompt": "MockedPrompt"}
+        mock_db_context.create_record.side_effect = Exception("Database error")
+
+        instance = mock_openai.return_value
+        instance.chat.completions.create.return_value.choices[
+            0].message.content = '{"content": "MockedResponse"}'
+
+        gamemaster = GptGamemaster(
+            apiKey="your_api_key", dbContext=mock_db_context)
+
+        # Use assertRaises to check for the expected exception
+        with self.assertRaises(Exception) as context:
+            gamemaster.CreateWorld(username="test_user",
+                                   setting="test_setting")
+
+        # Optionally, check the exception message or other details
+        self.assertEqual(str(context.exception), "Database error")
+
+    @patch('openai.OpenAI')
+    def test_CreateCharacter_ValueError(self, mock_openai):
+        mock_db_context = MagicMock()
+        mock_db_context.read_record.return_value = {"prompt": "MockedPrompt"}
+        instance = mock_openai.return_value
+        instance.chat.completions.create.return_value.choices[
+            0].message.content = 'Wow, cool character'
+
+        gamemaster = GptGamemaster(
+            apiKey="your_api_key", dbContext=mock_db_context)
+
+        # Use assertRaises to check for the expected ValueError
+        with self.assertRaises(ValueError) as context:
+            gamemaster.CreateCharacter(
+                username="test_user", introduction="test_intro")
+
+        # Optionally, check the exception message or other details
+        self.assertEqual(str(context.exception),
+                         "No JSON found in the input string")
+
+    @patch('openai.OpenAI')
+    def test_MakeATurn_DatabaseError(self, mock_openai):
+        mock_db_context = MagicMock()
+        mock_db_context.read_latest_record.side_effect = Exception(
+            "Database error")
+
+        instance = mock_openai.return_value
+        instance.chat.completions.create.return_value.choices[
+            0].message.content = '{"Main_Previous_Events":["All of them","None"],"Possible_Actions": []}'
+
+        gamemaster = GptGamemaster(
+            apiKey="your_api_key", dbContext=mock_db_context)
+
+        # Use assertRaises to check for the expected exception
+        with self.assertRaises(Exception) as context:
+            gamemaster.MakeATurn(username="test_user",
+                                 action="test_action", prompt="test_prompt")
+
+        # Optionally, check the exception message or other details
+        self.assertEqual(str(context.exception), "Database error")
+
 
 if __name__ == '__main__':
     unittest.main()
